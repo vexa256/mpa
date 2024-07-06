@@ -47,7 +47,7 @@
                     </div>
                 </div>
 
-                @include('sidebar.tims')
+                {{-- @include('sidebar.tims') --}}
 
                 @include('sidebar.mpa')
 

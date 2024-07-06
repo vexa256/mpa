@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class FileController extends Controller
 {
@@ -73,8 +73,8 @@ class FileController extends Controller
                             </tr>
                         </thead>
                         <tbody>
-                            @isset(\$DatabaseData)
-                                @foreach (\$DatabaseData as \$data)
+                            @isset(\$DataBaseData)
+                                @foreach (\$DataBaseData as \$data)
                                     <tr>
                                         $table_rows
                                         <td>

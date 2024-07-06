@@ -10,6 +10,49 @@
 <script src="{{ asset('assets/plugins/custom/fslightbox/fslightbox.bundle.js') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+        function waitForElement(selector, timeout) {
+            let intervalId;
+            let hasTimedOut = false;
+
+            const promise = new Promise((resolve, reject) => {
+                intervalId = setInterval(() => {
+                    const element = document.querySelector(selector);
+                    if (element) {
+                        clearInterval(intervalId);
+                        resolve(element);
+                    }
+                }, 300); // check every 300ms
+
+                setTimeout(() => {
+                    if (!document.querySelector(selector)) {
+                        hasTimedOut = true;
+                        clearInterval(intervalId);
+                        reject(new Error("Element not found within time limit"));
+                    }
+                }, timeout);
+            });
+
+            promise.then(element => {
+                // Initialize Stepper
+                const stepper = new KTStepper(element);
+
+                // Handle next step
+                stepper.on("kt.stepper.next", function(stepper) {
+                    stepper.goNext(); // go next step
+                });
+
+                // Handle previous step
+                stepper.on("kt.stepper.previous", function(stepper) {
+                    stepper.goPrevious(); // go previous step
+                });
+            }).catch(error => {
+                console.error(error.message);
+            });
+        }
+
+        waitForElement("#kt_stepper_example_basic", 5000); // wait for up to 5000ms (5 seconds)
+
         const responsesContainer = document.getElementById("responses");
         if (responsesContainer) {
             // Delegated event to handle dynamically added buttons
@@ -54,25 +97,96 @@
 
 
 
+{{-- @isset($tinMCE) --}}
+<script src="https://cdn.tiny.cloud/1/1nr3t3t5xeyg86kk7vb6p7u0d9eo1w4zd7dy14p1volsp9ed/tinymce/7/tinymce.min.js"
+    referrerpolicy="origin"></script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+    });
+</script>
+{{-- @endisset --}}
 
-@isset($editor)
-    <script src="{{ asset('assets/ckeditor/ckeditor.js') }}"></script>
-
-
-    <script src="{{ asset('assets/ckeditor/adapters/jquery.js') }}"></script>
-
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"
-        charset="utf-8"></script> --}}
+{{-- @isset($editor)
+    <script src="{{ asset('assets/ckeditor/build/ckeditor.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
-            $('textarea').ckeditor(function(textarea) {
-                // Callback function code.
+        document.addEventListener('DOMContentLoaded', () => {
+            const watchdog = new CKSource.EditorWatchdog();
+            window.watchdog = watchdog;
+
+            watchdog.setCreator((element, config) => {
+                return CKSource.Editor.create(element, config).then(editor => editor);
+            });
+
+            watchdog.setDestructor(editor => {
+                return editor.destroy();
+            });
+
+            watchdog.on('error', (error) => {
+                console.error('Error initializing CKEditor:', error);
+            });
+
+            // Function to initialize editors
+            const initializeEditors = () => {
+                const textareas = document.querySelectorAll('textarea.EditorMe');
+                textareas.forEach(textarea => {
+                    if (!textarea.hasAttribute('data-editor-initialized')) {
+                        watchdog.create(textarea, {
+                            // Add your CKEditor configuration here
+                        }).catch((error) => {
+                            console.error('CKEditor creation error:', error);
+                        });
+                        textarea.setAttribute('data-editor-initialized', 'true');
+                    }
+                });
+            };
+
+            // Function to destroy all editors
+            const destroyEditors = () => {
+                const editors = watchdog.editors;
+                if (editors) {
+                    editors.forEach(editor => {
+                        editor.destroy()
+                            .catch(error => console.error('Error destroying the editor:', error));
+                    });
+                }
+            };
+
+            // Wait for an element to be ready before initializing editors
+            const waitForElement = (selector, maxAttempts = 5, interval = 1000, attempt = 0) => {
+                setTimeout(() => {
+                    if (document.querySelector(selector)) {
+                        initializeEditors();
+                    } else if (attempt < maxAttempts) {
+                        waitForElement(selector, maxAttempts, interval, attempt + 1);
+                    } else {
+                        console.error('Element not found within time limit:', selector);
+                    }
+                }, interval);
+            };
+
+            // Listen for any modal shown event
+            $(document).on('shown.bs.modal', function() {
+                destroyEditors(); // Destroy instances before re-initializing them
+                waitForElement(
+                    'textarea.EditorMe'); // Check if the textarea is available before initializing
+            });
+
+            // Optional: Destroy editors when modal is hidden
+            $(document).on('hidden.bs.modal', function() {
+                destroyEditors();
             });
         });
     </script>
-@endisset
+@endisset --}}
+
+
 
 
 
@@ -401,6 +515,29 @@
     </script>
 @endisset
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('WarnBeforeSubmit').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the form from submitting
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Once this action is executed, the current indicator scores and reported data will be deleted. This action is not reversible.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    e.target.submit(); // Submit the form if the user confirms
+                }
+            });
+        });
+    });
+</script>
 </body>
 
 

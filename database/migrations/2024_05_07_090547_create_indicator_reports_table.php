@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('indicator_reports', function (Blueprint $table) {
             $table->id();
+            $table->string('ResponseType')->nullable();
+            $table->string('ApprovalStatus')->default('false');
             $table->string('RID');
-            $table->string('IID');
+            $table->string('IID')->unique();
             $table->text('Entity');
             $table->text('ReportedBy')->nullable();
             $table->text('Response');
             $table->text('Comments');
-            $table->integer('IndicatorResponsePercentageScore');
+            $table->text('ReasonForReturningTheIndicator');
+            $table->string('IndicatorResponsePercentageScore');
 
             $table->timestamps();
         });

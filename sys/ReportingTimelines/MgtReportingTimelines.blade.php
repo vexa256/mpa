@@ -27,8 +27,8 @@
             </tr>
         </thead>
         <tbody>
-            @isset($DatabaseData)
-                @foreach ($DatabaseData as $data)
+            @isset($DataBaseData)
+                @foreach ($DataBaseData as $data)
                     <tr>
                         {{-- <td class="bg-light fw-bolder text-dark">{{ $data->RID }}</td> --}}
                         <td class="bg-light fw-bolder text-dark">{{ $data->ReportTitle }}</td>
@@ -72,8 +72,8 @@
 
 
 
-@isset($DatabaseData)
-    @foreach ($DatabaseData as $up)
+@isset($DataBaseData)
+    @foreach ($DataBaseData as $up)
         {{ UpdateModalHeader($Title = 'Update the selected  record', $ModalID = $up->id) }}
         <form action="{{ route('MassUpdate') }}" class="" method="POST">
             @csrf

@@ -34,6 +34,11 @@
 
 
     <style>
+        .ck-placeholder {
+
+            display: none !important;
+        }
+
         .btn-group-sm>.btn,
         .btn-sm {
             padding: .25rem .4rem;

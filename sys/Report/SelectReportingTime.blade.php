@@ -1,7 +1,7 @@
 <div class="card-body shadow-lg pt-3 bg-light table-responsive">
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ route('IndicatorWarning') }}" method="GET">
+            <form action="{{ route('FileReport') }}" method="GET">
                 <div class="mb-3 col-md-12  py-5   my-5">
 
                     <label class="px-5 my-5 required form-label">
@@ -16,7 +16,7 @@
                             @foreach ($Modules as $data)
                                 <option value="{{ $data->RID }}">
 
-                                    {{ $data->ReportTitle }}
+                                    {{ $data->ReportTitle }} ({{ $data->ReportDescription }})
 
                                 </option>
                             @endforeach

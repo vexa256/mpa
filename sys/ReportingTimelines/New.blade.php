@@ -78,32 +78,25 @@
                         </div>
 
 
+                        <div class="row">
+                            @foreach ($Form as $data)
+                                @if ($data['type'] == 'string')
+                                    {{ CreateInputText($data, $placeholder = null, $col = '4') }}
+                                @elseif (
+                                    'smallint' == $data['type'] ||
+                                        'bigint' === $data['type'] ||
+                                        'integer' == $data['type'] ||
+                                        'float' == $data['type'] ||
+                                        'decimal' == $data['type'] ||
+                                        'bigint' == $data['type']
+                                )
+                                    {{ CreateInputInteger($data, $placeholder = null, $col = '4') }}
+                                @elseif ($data['type'] == 'date' || $data['type'] == 'datetime')
+                                    {{ CreateInputDate($data, $placeholder = null, $col = '4') }}
+                                @endif
+                            @endforeach
+                        </div>
 
-                        @foreach ($Form as $data)
-                            @if ($data['type'] == 'string')
-                                {{ CreateInputText($data, $placeholder = null, $col = '4') }}
-                            @elseif (
-                                'smallint' == $data['type'] ||
-                                    'bigint' === $data['type'] ||
-                                    'integer' == $data['type'] ||
-                                    'float' == $data['type'] ||
-                                    'decimal' == $data['type'] ||
-                                    'bigint' == $data['type']
-                            )
-                                {{ CreateInputInteger($data, $placeholder = null, $col = '4') }}
-                            @elseif ($data['type'] == 'date' || $data['type'] == 'datetime')
-                                {{ CreateInputDate($data, $placeholder = null, $col = '4') }}
-                            @endif
-                        @endforeach
-
-                    </div>
-
-                    <div class="row">
-                        @foreach ($Form as $data)
-                            @if ($data['type'] == 'text')
-                                {{ CreateInputEditor($data, $placeholder = null, $col = '12') }}
-                            @endif
-                        @endforeach
 
                     </div>
 

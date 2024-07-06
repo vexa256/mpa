@@ -15,7 +15,7 @@ class CrudController extends Controller
     {
         $TableName = $request->TableName;
         $tableColumns = Schema::getColumnListing($TableName);
-        $data = $request->except(['_token', 'id', 'TableName']);
+        $data = $request->except(['_token', 'id', 'TableName', 'url']); // Exclude 'url' from the data array
         $rules = [];
         $uploadedFiles = [];
 
@@ -45,13 +45,19 @@ class CrudController extends Controller
         // Insert data into the table
         try {
             $insertData = array_merge($data, $uploadedFiles);
+            $insertData['created_at'] = now(); // Automatically set the current timestamp for created_at
+            $insertData['updated_at'] = now(); // Automatically set the current timestamp for updated_at if needed
             DB::table($TableName)->insert($insertData);
         } catch (\Exception $e) {
-            dd($e);
             return back()->withErrors(['error_a' => 'Failed to insert data.'])->withInput();
         }
 
-        return redirect()->back()->with('status', 'Data inserted successfully.');
+        // Redirect to the provided URL if 'url' field is present; otherwise, redirect back
+        if ($request->has('url')) {
+            return redirect($request->url)->with('status', 'Data inserted successfully.');
+        } else {
+            return redirect()->back()->with('status', 'Data inserted successfully.');
+        }
     }
 
     private function moveUploadedFile($file)

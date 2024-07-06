@@ -9,6 +9,39 @@ function camel_case($str)
     return $str;
 }
 
+function detectInputType($indicator)
+{
+    $inputTypes = [
+        'percentage' => ['percentage', '%', 'proportion'],
+        'yes_no' => ['active', 'developed', 'updated', 'trained', 'established', 'revised', 'achieved', 'attained'],
+        'number' => ['number', 'count', '#', 'score', 'No. of', 'No.'],
+    ];
+
+    // Check for percentage first
+    foreach ($inputTypes['percentage'] as $keyword) {
+        if (stripos($indicator, $keyword) !== false) {
+            return 'percentage';
+        }
+    }
+
+    // Check for yes/no
+    foreach ($inputTypes['yes_no'] as $keyword) {
+        if (stripos($indicator, $keyword) !== false) {
+            return 'yes_no';
+        }
+    }
+
+    // Check for number
+    foreach ($inputTypes['number'] as $keyword) {
+        if (stripos($indicator, $keyword) !== false) {
+            return 'number';
+        }
+    }
+
+    // Default to percentage if no other type matches
+    return 'percentage';
+}
+
 function UpdateModalHeader($Title, $ModalID)
 {
     echo ' <div class="modal bg-white fade"  id="Update' .
@@ -234,15 +267,14 @@ function DescModal($ArrayData, $Title, $ModalID, $col)
 
                 <div class="modal-body">
 
-
-                        <div class="mb-10 col-md-12">
+                               <div class="mb-10 col-md-12 col-12">
                             <label for="exampleFormControlInput1" class="required form-label">Description/Details</label>
-                            <textarea name="Desc">
-                             ' .
-        $data->{$col} .
-            '
-                            </textarea>
+                            <textarea name="Desc" class="" style="width: 100%; height: 200px;">
+    ' . $data->{$col} . '
+</textarea>
+
                         </div>
+
 
 
                 </div>
